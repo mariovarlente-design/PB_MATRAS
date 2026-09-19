@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Score Badminton</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background-color: #000;
+            color: #fff;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Top Bar Navigation */
+        .top-bar {
+            height: 50px;
+            background-color: #000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 15px;
+            border-bottom: 1px solid #333;
+        }
+
+        .top-bar-left, .top-bar-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .title {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .btn-action {
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .btn-action:active {
+            opacity: 0.7;
+        }
+
+        /* Tombol Pindah Tempat Kecil */
+        .btn-swap {
+            background-color: #222;
+            border: 1px solid #555;
+            color: #fff;
+            font-size: 12px;
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .btn-swap:active {
+            background-color: #444;
+            transform: scale(0.95);
+        }
+
+        /* Main Score Area */
+        .main-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            gap: 10px;
+        }
+
+        /* Middle Header Info (Players & Game Score) */
+        .header-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 85px;
+            gap: 10px;
+        }
+
+        .team-box-wrapper {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .team-box {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .player-tag {
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 16px;
+            text-align: center;
+            outline: none;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        /* Color Picker Input Styling */
+        .color-picker-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            cursor: pointer;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            flex-shrink: 0;
+        }
+
+        .color-picker-btn input[type="color"] {
+            opacity: 0;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+        }
+
+        /* Center Game Score & Serve Indicator */
+        .center-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .serve-indicator {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background-color: #444;
+            border: 2px solid #888;
+        }
+
+        .serve-indicator.active {
+            background-color: #fff;
+            border-color: #fff;
+            box-shadow: 0 0 8px #fff;
+        }
+
+        .set-score-box {
+            background-color: #fff;
+            color: #000;
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-size: 22px;
+            font-weight: bold;
+            display: flex;
+            gap: 8px;
+        }
+
+        .receiver-badge {
+            font-weight: bold;
+            color: #888;
+            font-size: 16px;
+        }
+
+        /* Big Score Buttons */
+        .score-board {
+            flex: 1;
+            display: flex;
+            gap: 15px;
+        }
+
+        .score-box {
+            position: relative;
+            flex: 1;
+            background-color: #050505;
+            border: 2px solid #222;
+            border-radius: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: border-color 0.2s, background-color 0.1s;
+        }
+
+        .score-box:active {
+            background-color: #151515;
+        }
+
+        .score-number {
+            font-size: 16vh;
+            font-weight: bold;
+            line-height: 1;
+        }
+
+        /* Tombol Kurang (-) Kecil di Dalam Kotak Skor */
+        .btn-minus {
+            position: absolute;
+            bottom: 12px;
+            right: 12px;
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background-color: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            z-index: 10;
+        }
+
+        .btn-minus:active {
+            background-color: #d32f2f;
+            transform: scale(0.9);
+        }
+
+        /* Highlight Garis Biru Sesuai Servis Aktif */
+        .score-box.active-side {
+            border: 4px solid #3d5afe;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="top-bar-left">
+            <button class="btn-action" onclick="toggleFullscreen()">&#x21F1;</button>
+            <span class="title">Score Badminton</span>
+        </div>
+        <div class="top-bar-right">
+            <button class="btn-action" onclick="toggleServe()">&#x21A9; SERVE</button>
+            <!-- Tombol Pindah Tempat Kecil di Samping SERVE -->
+            <button class="btn-swap" onclick="swapSides()" title="Pindah Tempat / Tukar Sisi">&#x21C6; PINDAH</button>
+            <button class="btn-action" onclick="undo()">&#x21A9; UNDO</button>
+            <button class="btn-action" onclick="resetGame()">&#x279D; END GAME</button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        
+        <!-- Header Info (Players, Game Sets, Serve) -->
+        <div class="header-info">
+            <!-- Tim Kiri -->
+            <div class="team-box-wrapper">
+                <div class="color-picker-btn" id="picker-btn-1" title="Pilih Warna Tim Kiri">
+                    <input type="color" id="color-team1" value="#d32f2f" onchange="changeTeamColor(1, this.value)">
+                </div>
+                <div class="team-box">
+                    <div class="player-tag" contenteditable="true" spellcheck="false" id="p1_a">Sudir</div>
+                    <div class="player-tag" contenteditable="true" spellcheck="false" id="p1_b">Bolor</div>
+                </div>
+            </div>
+
+            <!-- Center Info -->
+            <div class="center-info">
+                <div class="serve-indicator" id="serve-left"></div>
+                <div class="set-score-box">
+                    <span id="set-team1">0</span>
+                    <span id="set-team2">0</span>
+                </div>
+                <span class="receiver-badge">R</span>
+                <div class="serve-indicator" id="serve-right"></div>
+            </div>
+
+            <!-- Tim Kanan -->
+            <div class="team-box-wrapper">
+                <div class="team-box">
+                    <div class="player-tag" contenteditable="true" spellcheck="false" id="p2_a">Asep</div>
+                    <div class="player-tag" contenteditable="true" spellcheck="false" id="p2_b">Jinggo</div>
+                </div>
+                <div class="color-picker-btn" id="picker-btn-2" title="Pilih Warna Tim Kanan">
+                    <input type="color" id="color-team2" value="#00897b" onchange="changeTeamColor(2, this.value)">
+                </div>
+            </div>
+        </div>
+
+        <!-- Big Score Touch Areas -->
+        <div class="score-board">
+            <!-- Kotak Skor Kiri -->
+            <div class="score-box" id="score-left" onclick="addPoint(1)">
+                <span class="score-number" id="num-left">0</span>
+                <div class="btn-minus" onclick="subtractPoint(event, 1)" title="Kurangi Poin Kiri">&#8722;</div>
+            </div>
+
+            <!-- Kotak Skor Kanan -->
+            <div class="score-box active-side" id="score-right" onclick="addPoint(2)">
+                <span class="score-number" id="num-right">0</span>
+                <div class="btn-minus" onclick="subtractPoint(event, 2)" title="Kurangi Poin Kanan">&#8722;</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        let score1 = 0;
+        let score2 = 0;
+        let set1 = 0;
+        let set2 = 0;
+        let servingTeam = 2; // 1: Tim Kiri, 2: Tim Kanan
+
+        let colorTeam1 = "#d32f2f"; // Default Tim Kiri
+        let colorTeam2 = "#00897b"; // Default Tim Kanan
+
+        let history = [];
+
+        function getContrastYIQ(hexcolor){
+            hexcolor = hexcolor.replace("#", "");
+            var r = parseInt(hexcolor.substr(0,2),16);
+            var g = parseInt(hexcolor.substr(2,2),16);
+            var b = parseInt(hexcolor.substr(4,2),16);
+            var yiq = ((r*299)+(g*587)+(b*114))/1000;
+            return (yiq >= 128) ? '#000000' : '#ffffff';
+        }
+
+        function changeTeamColor(team, colorHex) {
+            if (team === 1) {
+                colorTeam1 = colorHex;
+            } else {
+                colorTeam2 = colorHex;
+            }
+            applyColors();
+        }
+
+        function applyColors() {
+            const p1_a = document.getElementById('p1_a');
+            const p1_b = document.getElementById('p1_b');
+            const textColor1 = getContrastYIQ(colorTeam1);
+            p1_a.style.backgroundColor = colorTeam1;
+            p1_a.style.color = textColor1;
+            p1_b.style.backgroundColor = colorTeam1;
+            p1_b.style.color = textColor1;
+            document.getElementById('picker-btn-1').style.backgroundColor = colorTeam1;
+            document.getElementById('color-team1').value = colorTeam1;
+
+            const p2_a = document.getElementById('p2_a');
+            const p2_b = document.getElementById('p2_b');
+            const textColor2 = getContrastYIQ(colorTeam2);
+            p2_a.style.backgroundColor = colorTeam2;
+            p2_a.style.color = textColor2;
+            p2_b.style.backgroundColor = colorTeam2;
+            p2_b.style.color = textColor2;
+            document.getElementById('picker-btn-2').style.backgroundColor = colorTeam2;
+            document.getElementById('color-team2').value = colorTeam2;
+        }
+
+        function updateDisplay() {
+            document.getElementById('num-left').innerText = score1;
+            document.getElementById('num-right').innerText = score2;
+            document.getElementById('set-team1').innerText = set1;
+            document.getElementById('set-team2').innerText = set2;
+
+            const serveLeft = document.getElementById('serve-left');
+            const serveRight = document.getElementById('serve-right');
+            const scoreBoxLeft = document.getElementById('score-left');
+            const scoreBoxRight = document.getElementById('score-right');
+
+            if (servingTeam === 1) {
+                serveLeft.classList.add('active');
+                serveRight.classList.remove('active');
+                scoreBoxLeft.classList.add('active-side');
+                scoreBoxRight.classList.remove('active-side');
+            } else {
+                serveLeft.classList.remove('active');
+                serveRight.classList.add('active');
+                scoreBoxLeft.classList.remove('active-side');
+                scoreBoxRight.classList.add('active-side');
+            }
+        }
+
+        function saveHistory() {
+            history.push({
+                score1: score1,
+                score2: score2,
+                set1: set1,
+                set2: set2,
+                servingTeam: servingTeam,
+                colorTeam1: colorTeam1,
+                colorTeam2: colorTeam2,
+                p1_a: document.getElementById('p1_a').innerText,
+                p1_b: document.getElementById('p1_b').innerText,
+                p2_a: document.getElementById('p2_a').innerText,
+                p2_b: document.getElementById('p2_b').innerText
+            });
+        }
+
+        function addPoint(team) {
+            saveHistory();
+
+            if (team === 1) {
+                score1++;
+                servingTeam = 1;
+            } else {
+                score2++;
+                servingTeam = 2;
+            }
+
+            // Aturan Kemenangan Set Badminton (21 Poin)
+            if ((score1 >= 21 && score1 - score2 >= 2) || score1 === 30) {
+                alert('Tim Kiri Menang Set Ini!');
+                set1++;
+                resetScores();
+            } else if ((score2 >= 21 && score2 - score1 >= 2) || score2 === 30) {
+                alert('Tim Kanan Menang Set Ini!');
+                set2++;
+                resetScores();
+            }
+
+            updateDisplay();
+        }
+
+        function subtractPoint(event, team) {
+            event.stopPropagation();
+
+            if (team === 1 && score1 > 0) {
+                saveHistory();
+                score1--;
+                updateDisplay();
+            } else if (team === 2 && score2 > 0) {
+                saveHistory();
+                score2--;
+                updateDisplay();
+            }
+        }
+
+        /* Fungsi Pindah Tempat / Tukar Sisi */
+        function swapSides() {
+            saveHistory();
+
+            // Tukar Skor & Set
+            [score1, score2] = [score2, score1];
+            [set1, set2] = [set2, set1];
+
+            // Tukar Servis
+            servingTeam = (servingTeam === 1) ? 2 : 1;
+
+            // Tukar Warna Tim
+            [colorTeam1, colorTeam2] = [colorTeam2, colorTeam1];
+
+            // Tukar Nama Pemain
+            const p1_a = document.getElementById('p1_a');
+            const p1_b = document.getElementById('p1_b');
+            const p2_a = document.getElementById('p2_a');
+            const p2_b = document.getElementById('p2_b');
+
+            const tempP1a = p1_a.innerText;
+            const tempP1b = p1_b.innerText;
+
+            p1_a.innerText = p2_a.innerText;
+            p1_b.innerText = p2_b.innerText;
+            p2_a.innerText = tempP1a;
+            p2_b.innerText = tempP1b;
+
+            applyColors();
+            updateDisplay();
+        }
+
+        function resetScores() {
+            score1 = 0;
+            score2 = 0;
+        }
+
+        function undo() {
+            if (history.length > 0) {
+                let lastState = history.pop();
+                score1 = lastState.score1;
+                score2 = lastState.score2;
+                set1 = lastState.set1;
+                set2 = lastState.set2;
+                servingTeam = lastState.servingTeam;
+                colorTeam1 = lastState.colorTeam1;
+                colorTeam2 = lastState.colorTeam2;
+
+                document.getElementById('p1_a').innerText = lastState.p1_a;
+                document.getElementById('p1_b').innerText = lastState.p1_b;
+                document.getElementById('p2_a').innerText = lastState.p2_a;
+                document.getElementById('p2_b').innerText = lastState.p2_b;
+
+                applyColors();
+                updateDisplay();
+            }
+        }
+
+        function toggleServe() {
+            saveHistory();
+            servingTeam = servingTeam === 1 ? 2 : 1;
+            updateDisplay();
+        }
+
+        function resetGame() {
+            if (confirm("Apakah Anda yakin ingin mengakhiri dan mengulang pertandingan?")) {
+                saveHistory();
+                score1 = 0;
+                score2 = 0;
+                set1 = 0;
+                set2 = 0;
+                servingTeam = 2;
+                updateDisplay();
+            }
+        }
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    alert(`Gagal masuk mode Fullscreen: ${err.message}`);
+                });
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        // Inisialisasi awal
+        applyColors();
+        updateDisplay();
+    </script>
+</body>
+</html>
