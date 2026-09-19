@@ -14,9 +14,10 @@
             font-family: Arial, Helvetica, sans-serif;
         }
 
+        /* Latar dasar diubah menjadi PUTIH */
         body {
-            background-color: #000;
-            color: #fff;
+            background-color: #ffffff;
+            color: #000000;
             height: 100vh;
             width: 100vw;
             display: flex;
@@ -24,15 +25,15 @@
             overflow: hidden;
         }
 
-        /* Top Bar Navigation */
+        /* Top Bar Navigation - Latar Putih */
         .top-bar {
             height: 50px;
-            background-color: #000;
+            background-color: #ffffff;
             display: flex;
             align-items: center;
             justify-content: space-between;
             padding: 0 15px;
-            border-bottom: 1px solid #333;
+            border-bottom: 2px solid #e0e0e0;
             flex-shrink: 0;
         }
 
@@ -45,12 +46,13 @@
         .title {
             font-size: 16px;
             font-weight: bold;
+            color: #000;
         }
 
         .btn-action {
             background: transparent;
             border: none;
-            color: #fff;
+            color: #000;
             font-size: 13px;
             font-weight: bold;
             cursor: pointer;
@@ -60,14 +62,14 @@
         }
 
         .btn-action:active {
-            opacity: 0.7;
+            opacity: 0.6;
         }
 
         /* Tombol Pindah Tempat */
         .btn-swap {
-            background-color: #222;
-            border: 1px solid #555;
-            color: #fff;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            color: #000;
             font-size: 12px;
             font-weight: bold;
             padding: 4px 10px;
@@ -80,7 +82,7 @@
         }
 
         .btn-swap:active {
-            background-color: #444;
+            background-color: #e0e0e0;
             transform: scale(0.95);
         }
 
@@ -92,6 +94,7 @@
             padding: 10px;
             gap: 10px;
             overflow: hidden;
+            background-color: #ffffff;
         }
 
         /* Header Info (Pemain & VS) */
@@ -123,11 +126,12 @@
             padding: 8px 14px;
             border-radius: 12px;
             font-weight: 900;
-            font-size: 40px;
+            font-size: 20px;
             text-align: center;
             outline: none;
             transition: background-color 0.2s, color 0.2s;
             letter-spacing: 0.5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
         /* Color Picker */
@@ -135,7 +139,7 @@
             width: 32px;
             height: 32px;
             border-radius: 50%;
-            border: 2px solid #fff;
+            border: 2px solid #ccc;
             cursor: pointer;
             overflow: hidden;
             display: flex;
@@ -163,23 +167,23 @@
             width: 16px;
             height: 16px;
             border-radius: 50%;
-            background-color: #444;
-            border: 2px solid #888;
+            background-color: #ddd;
+            border: 2px solid #bbb;
         }
 
         .serve-indicator.active {
-            background-color: #fff;
-            border-color: #fff;
-            box-shadow: 0 0 10px #fff;
+            background-color: #2196f3;
+            border-color: #1976d2;
+            box-shadow: 0 0 10px rgba(33, 150, 243, 0.6);
         }
 
         /* Tampilan Teks VS */
         .vs-box {
-            background-color: #fff;
-            color: #000;
+            background-color: #000;
+            color: #fff;
             border-radius: 20px;
             padding: 4px 16px;
-            font-size: 22px;
+            font-size: 40px;
             font-weight: 900;
             letter-spacing: 1px;
             display: flex;
@@ -195,6 +199,7 @@
             height: 100%;
         }
 
+        /* Kotak Papan Skor TETAP HITAM */
         .score-box {
             position: relative;
             flex: 1;
@@ -206,14 +211,16 @@
             align-items: center;
             cursor: pointer;
             transition: border-color 0.2s, background-color 0.1s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
 
         .score-box:active {
             background-color: #151515;
         }
 
-        /* Angka Skor Utama */
+        /* Angka Skor Utama Warna Putih */
         .score-number {
+            color: #ffffff;
             font-size: 38vh;
             font-weight: 900;
             line-height: 1;
@@ -302,7 +309,7 @@
             </div>
         </div>
 
-        <!-- Big Score Touch Areas -->
+        <!-- Big Score Touch Areas (Latar Skor Tetap Hitam) -->
         <div class="score-board">
             <!-- Kotak Skor Kiri -->
             <div class="score-box" id="score-left" onclick="addPoint(1)">
@@ -328,6 +335,56 @@
         let colorTeam2 = "#00897b";
 
         let history = [];
+
+        // Inisialisasi Web Audio API
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        // Suara Keras Penanda Poin
+        function playScoreSound() {
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            const now = audioCtx.currentTime;
+
+            // Oscillator 1 (Nada Keras)
+            const osc1 = audioCtx.createOscillator();
+            const gain1 = audioCtx.createGain();
+            osc1.type = 'square';
+            osc1.frequency.setValueAtTime(880, now); // Tone A5
+            osc1.frequency.setValueAtTime(1320, now + 0.08); // Tone E6
+            
+            gain1.gain.setValueAtTime(0.8, now); // Volume Keras
+            gain1.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+
+            osc1.connect(gain1);
+            gain1.connect(audioCtx.destination);
+
+            osc1.start(now);
+            osc1.stop(now + 0.25);
+        }
+
+        // Suara Aksesori Tambahan
+        function playActionSound(freq = 440) {
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            const now = audioCtx.currentTime;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, now);
+            gain.gain.setValueAtTime(0.4, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.start(now);
+            osc.stop(now + 0.12);
+        }
 
         function getContrastYIQ(hexcolor){
             hexcolor = hexcolor.replace("#", "");
@@ -416,7 +473,9 @@
                 servingTeam = 2;
             }
 
-            // Poin terus bertambah tanpa batasan atau reset otomatis
+            // Bunyikan Suara Keras
+            playScoreSound();
+
             updateDisplay();
         }
 
@@ -426,10 +485,12 @@
             if (team === 1 && score1 > 0) {
                 saveHistory();
                 score1--;
+                playActionSound(300);
                 updateDisplay();
             } else if (team === 2 && score2 > 0) {
                 saveHistory();
                 score2--;
+                playActionSound(300);
                 updateDisplay();
             }
         }
@@ -454,6 +515,7 @@
             p2_a.innerText = tempP1a;
             p2_b.innerText = tempP1b;
 
+            playActionSound(600);
             applyColors();
             updateDisplay();
         }
@@ -472,6 +534,7 @@
                 document.getElementById('p2_a').innerText = lastState.p2_a;
                 document.getElementById('p2_b').innerText = lastState.p2_b;
 
+                playActionSound(350);
                 applyColors();
                 updateDisplay();
             }
@@ -480,6 +543,7 @@
         function toggleServe() {
             saveHistory();
             servingTeam = servingTeam === 1 ? 2 : 1;
+            playActionSound(500);
             updateDisplay();
         }
 
@@ -489,6 +553,7 @@
                 score1 = 0;
                 score2 = 0;
                 servingTeam = 2;
+                playActionSound(250);
                 updateDisplay();
             }
         }
