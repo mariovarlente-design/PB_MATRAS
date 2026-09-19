@@ -94,7 +94,7 @@
             overflow: hidden;
         }
 
-        /* Header Info (Pemain & Set) */
+        /* Header Info (Pemain & VS) */
         .header-info {
             display: flex;
             justify-content: space-between;
@@ -118,7 +118,7 @@
             gap: 6px;
         }
 
-        /* Nama Pemain Diperbesar */
+        /* Nama Pemain */
         .player-tag {
             padding: 8px 14px;
             border-radius: 12px;
@@ -152,11 +152,11 @@
             cursor: pointer;
         }
 
-        /* Center Game Score & Indicator */
+        /* Center Info (VS & Indikator Servis) */
         .center-info {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 12px;
         }
 
         .serve-indicator {
@@ -173,21 +173,18 @@
             box-shadow: 0 0 10px #fff;
         }
 
-        .set-score-box {
+        /* Tampilan Teks VS */
+        .vs-box {
             background-color: #fff;
             color: #000;
             border-radius: 20px;
-            padding: 6px 16px;
-            font-size: 24px;
+            padding: 4px 16px;
+            font-size: 22px;
             font-weight: 900;
+            letter-spacing: 1px;
             display: flex;
-            gap: 10px;
-        }
-
-        .receiver-badge {
-            font-weight: bold;
-            color: #888;
-            font-size: 16px;
+            align-items: center;
+            justify-content: center;
         }
 
         /* Area Papan Skor */
@@ -215,7 +212,7 @@
             background-color: #151515;
         }
 
-        /* Angka Skor Utama Diperbesar Maksimal */
+        /* Angka Skor Utama */
         .score-number {
             font-size: 38vh;
             font-weight: 900;
@@ -223,7 +220,7 @@
             font-family: Impact, Arial, sans-serif;
         }
 
-        /* Tombol Kurang (-) Kecil */
+        /* Tombol Kurang (-) */
         .btn-minus {
             position: absolute;
             bottom: 15px;
@@ -249,7 +246,6 @@
             transform: scale(0.9);
         }
 
-        /* Garis Biru Servis Aktif */
         .score-box.active-side {
             border: 4px solid #3d5afe;
         }
@@ -274,7 +270,7 @@
     <!-- Main Content -->
     <div class="main-container">
         
-        <!-- Header Info (Players, Game Sets, Serve) -->
+        <!-- Header Info -->
         <div class="header-info">
             <!-- Tim Kiri -->
             <div class="team-box-wrapper">
@@ -282,27 +278,23 @@
                     <input type="color" id="color-team1" value="#d32f2f" onchange="changeTeamColor(1, this.value)">
                 </div>
                 <div class="team-box">
-                    <div class="player-tag" contenteditable="true" spellcheck="false" id="p1_a">Nama</div>
-                    <div class="player-tag" contenteditable="true" spellcheck="false" id="p1_b">Nama</div>
+                    <div class="player-tag" contenteditable="true" spellcheck="false" id="p1_a">Sudir</div>
+                    <div class="player-tag" contenteditable="true" spellcheck="false" id="p1_b">Bolor</div>
                 </div>
             </div>
 
-            <!-- Center Info -->
+            <!-- Center Info (VS) -->
             <div class="center-info">
                 <div class="serve-indicator" id="serve-left"></div>
-                <div class="set-score-box">
-                    <span id="set-team1">0</span>
-                    <span id="set-team2">0</span>
-                </div>
-                <span class="receiver-badge">R</span>
+                <div class="vs-box">VS</div>
                 <div class="serve-indicator" id="serve-right"></div>
             </div>
 
             <!-- Tim Kanan -->
             <div class="team-box-wrapper">
                 <div class="team-box">
-                    <div class="player-tag" contenteditable="true" spellcheck="false" id="p2_a">Nama</div>
-                    <div class="player-tag" contenteditable="true" spellcheck="false" id="p2_b">Nama</div>
+                    <div class="player-tag" contenteditable="true" spellcheck="false" id="p2_a">Asep</div>
+                    <div class="player-tag" contenteditable="true" spellcheck="false" id="p2_b">Jinggo</div>
                 </div>
                 <div class="color-picker-btn" id="picker-btn-2" title="Pilih Warna Tim Kanan">
                     <input type="color" id="color-team2" value="#00897b" onchange="changeTeamColor(2, this.value)">
@@ -330,12 +322,10 @@
     <script>
         let score1 = 0;
         let score2 = 0;
-        let set1 = 0;
-        let set2 = 0;
         let servingTeam = 2; // 1: Tim Kiri, 2: Tim Kanan
 
-        let colorTeam1 = "#d32f2f"; // Default Tim Kiri
-        let colorTeam2 = "#00897b"; // Default Tim Kanan
+        let colorTeam1 = "#d32f2f";
+        let colorTeam2 = "#00897b";
 
         let history = [];
 
@@ -382,8 +372,6 @@
         function updateDisplay() {
             document.getElementById('num-left').innerText = score1;
             document.getElementById('num-right').innerText = score2;
-            document.getElementById('set-team1').innerText = set1;
-            document.getElementById('set-team2').innerText = set2;
 
             const serveLeft = document.getElementById('serve-left');
             const serveRight = document.getElementById('serve-right');
@@ -407,8 +395,6 @@
             history.push({
                 score1: score1,
                 score2: score2,
-                set1: set1,
-                set2: set2,
                 servingTeam: servingTeam,
                 colorTeam1: colorTeam1,
                 colorTeam2: colorTeam2,
@@ -430,16 +416,7 @@
                 servingTeam = 2;
             }
 
-            if ((score1 >= 21 && score1 - score2 >= 2) || score1 === 30) {
-                alert('Tim Kiri Menang Set Ini!');
-                set1++;
-                resetScores();
-            } else if ((score2 >= 21 && score2 - score1 >= 2) || score2 === 30) {
-                alert('Tim Kanan Menang Set Ini!');
-                set2++;
-                resetScores();
-            }
-
+            // Poin terus bertambah tanpa batasan atau reset otomatis
             updateDisplay();
         }
 
@@ -461,10 +438,7 @@
             saveHistory();
 
             [score1, score2] = [score2, score1];
-            [set1, set2] = [set2, set1];
-
             servingTeam = (servingTeam === 1) ? 2 : 1;
-
             [colorTeam1, colorTeam2] = [colorTeam2, colorTeam1];
 
             const p1_a = document.getElementById('p1_a');
@@ -484,18 +458,11 @@
             updateDisplay();
         }
 
-        function resetScores() {
-            score1 = 0;
-            score2 = 0;
-        }
-
         function undo() {
             if (history.length > 0) {
                 let lastState = history.pop();
                 score1 = lastState.score1;
                 score2 = lastState.score2;
-                set1 = lastState.set1;
-                set2 = lastState.set2;
                 servingTeam = lastState.servingTeam;
                 colorTeam1 = lastState.colorTeam1;
                 colorTeam2 = lastState.colorTeam2;
@@ -517,12 +484,10 @@
         }
 
         function resetGame() {
-            if (confirm("Apakah Anda yakin ingin mengakhiri dan mengulang pertandingan?")) {
+            if (confirm("Apakah Anda yakin ingin mengulang poin ke 0 - 0?")) {
                 saveHistory();
                 score1 = 0;
                 score2 = 0;
-                set1 = 0;
-                set2 = 0;
                 servingTeam = 2;
                 updateDisplay();
             }
