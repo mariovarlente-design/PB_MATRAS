@@ -33,6 +33,7 @@
             justify-content: space-between;
             padding: 0 15px;
             border-bottom: 1px solid #333;
+            flex-shrink: 0;
         }
 
         .top-bar-left, .top-bar-right {
@@ -62,14 +63,14 @@
             opacity: 0.7;
         }
 
-        /* Tombol Pindah Tempat Kecil */
+        /* Tombol Pindah Tempat */
         .btn-swap {
             background-color: #222;
             border: 1px solid #555;
             color: #fff;
             font-size: 12px;
             font-weight: bold;
-            padding: 4px 8px;
+            padding: 4px 10px;
             border-radius: 6px;
             cursor: pointer;
             display: flex;
@@ -83,52 +84,56 @@
             transform: scale(0.95);
         }
 
-        /* Main Score Area */
+        /* Main Area */
         .main-container {
             flex: 1;
             display: flex;
             flex-direction: column;
             padding: 10px;
             gap: 10px;
+            overflow: hidden;
         }
 
-        /* Middle Header Info (Players & Game Score) */
+        /* Header Info (Pemain & Set) */
         .header-info {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            height: 85px;
+            min-height: 95px;
             gap: 10px;
+            flex-shrink: 0;
         }
 
         .team-box-wrapper {
             flex: 1;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
         }
 
         .team-box {
             flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 6px;
         }
 
+        /* Nama Pemain Diperbesar */
         .player-tag {
-            padding: 6px 12px;
+            padding: 8px 14px;
             border-radius: 12px;
-            font-weight: bold;
-            font-size: 16px;
+            font-weight: 900;
+            font-size: 20px;
             text-align: center;
             outline: none;
             transition: background-color 0.2s, color 0.2s;
+            letter-spacing: 0.5px;
         }
 
-        /* Color Picker Input Styling */
+        /* Color Picker */
         .color-picker-btn {
-            width: 28px;
-            height: 28px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             border: 2px solid #fff;
             cursor: pointer;
@@ -142,12 +147,12 @@
 
         .color-picker-btn input[type="color"] {
             opacity: 0;
-            width: 40px;
-            height: 40px;
+            width: 45px;
+            height: 45px;
             cursor: pointer;
         }
 
-        /* Center Game Score & Serve Indicator */
+        /* Center Game Score & Indicator */
         .center-info {
             display: flex;
             align-items: center;
@@ -155,8 +160,8 @@
         }
 
         .serve-indicator {
-            width: 14px;
-            height: 14px;
+            width: 16px;
+            height: 16px;
             border-radius: 50%;
             background-color: #444;
             border: 2px solid #888;
@@ -165,18 +170,18 @@
         .serve-indicator.active {
             background-color: #fff;
             border-color: #fff;
-            box-shadow: 0 0 8px #fff;
+            box-shadow: 0 0 10px #fff;
         }
 
         .set-score-box {
             background-color: #fff;
             color: #000;
             border-radius: 20px;
-            padding: 4px 12px;
-            font-size: 22px;
-            font-weight: bold;
+            padding: 6px 16px;
+            font-size: 24px;
+            font-weight: 900;
             display: flex;
-            gap: 8px;
+            gap: 10px;
         }
 
         .receiver-badge {
@@ -185,18 +190,19 @@
             font-size: 16px;
         }
 
-        /* Big Score Buttons */
+        /* Area Papan Skor */
         .score-board {
             flex: 1;
             display: flex;
             gap: 15px;
+            height: 100%;
         }
 
         .score-box {
             position: relative;
             flex: 1;
             background-color: #050505;
-            border: 2px solid #222;
+            border: 3px solid #222;
             border-radius: 24px;
             display: flex;
             justify-content: center;
@@ -209,24 +215,26 @@
             background-color: #151515;
         }
 
+        /* Angka Skor Utama Diperbesar Maksimal */
         .score-number {
-            font-size: 16vh;
-            font-weight: bold;
+            font-size: 38vh;
+            font-weight: 900;
             line-height: 1;
+            font-family: Impact, Arial, sans-serif;
         }
 
-        /* Tombol Kurang (-) Kecil di Dalam Kotak Skor */
+        /* Tombol Kurang (-) Kecil */
         .btn-minus {
             position: absolute;
-            bottom: 12px;
-            right: 12px;
-            width: 38px;
-            height: 38px;
-            border-radius: 10px;
-            background-color: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            bottom: 15px;
+            right: 15px;
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background-color: rgba(255, 255, 255, 0.18);
+            border: 1px solid rgba(255, 255, 255, 0.35);
             color: #fff;
-            font-size: 24px;
+            font-size: 28px;
             font-weight: bold;
             display: flex;
             justify-content: center;
@@ -241,7 +249,7 @@
             transform: scale(0.9);
         }
 
-        /* Highlight Garis Biru Sesuai Servis Aktif */
+        /* Garis Biru Servis Aktif */
         .score-box.active-side {
             border: 4px solid #3d5afe;
         }
@@ -257,8 +265,7 @@
         </div>
         <div class="top-bar-right">
             <button class="btn-action" onclick="toggleServe()">&#x21A9; SERVE</button>
-            <!-- Tombol Pindah Tempat Kecil di Samping SERVE -->
-            <button class="btn-swap" onclick="swapSides()" title="Pindah Tempat / Tukar Sisi">&#x21C6; PINDAH</button>
+            <button class="btn-swap" onclick="swapSides()" title="Pindah Tempat">&#x21C6; PINDAH</button>
             <button class="btn-action" onclick="undo()">&#x21A9; UNDO</button>
             <button class="btn-action" onclick="resetGame()">&#x279D; END GAME</button>
         </div>
@@ -423,7 +430,6 @@
                 servingTeam = 2;
             }
 
-            // Aturan Kemenangan Set Badminton (21 Poin)
             if ((score1 >= 21 && score1 - score2 >= 2) || score1 === 30) {
                 alert('Tim Kiri Menang Set Ini!');
                 set1++;
@@ -451,21 +457,16 @@
             }
         }
 
-        /* Fungsi Pindah Tempat / Tukar Sisi */
         function swapSides() {
             saveHistory();
 
-            // Tukar Skor & Set
             [score1, score2] = [score2, score1];
             [set1, set2] = [set2, set1];
 
-            // Tukar Servis
             servingTeam = (servingTeam === 1) ? 2 : 1;
 
-            // Tukar Warna Tim
             [colorTeam1, colorTeam2] = [colorTeam2, colorTeam1];
 
-            // Tukar Nama Pemain
             const p1_a = document.getElementById('p1_a');
             const p1_b = document.getElementById('p1_b');
             const p2_a = document.getElementById('p2_a');
